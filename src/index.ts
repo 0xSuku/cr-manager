@@ -36,7 +36,7 @@ const newtQuestContract = new ethers.Contract(newtQuestContractAddress, newtQues
 
 // CONFIG: Poner id de los raiders acá
 const raiderGrimweedList = [
-    1
+    2
 ]
 
 const raiderNewtList = [
@@ -45,30 +45,52 @@ const raiderNewtList = [
 
 //gas = https://api.polygonscan.com/api?module=gastracker&action=gasoracle&apikey=SKCZ68JMGBCSMJ6U1R4H2C194TZV91P2FH
 
+// TODO: Hay que checkear si el raider está en quest, sino parece que ya volvió con el timeHome
 async function main() {
 
     // await sendGrimweed();
     // await endGrimweedQuest();
     // await startNewtQuest();
     // await endNewtQuest();
-    // const raiderId = raiderGrimweedList[0];
-    await checkTimeHomes();
+    // await getRewardsGrimweedQuest();
+    await getRewardsNewtQuest();
+    // await checkGrimweedTimeHomes();
+    // await checkNewtTimeHomes();
     process.exit();
 }
 
-async function getTimeHome(raiderId: number) {
+async function getGrimweedTimeHome(raiderId: number) {
     const hex = ethers.utils.hexlify(raiderId);
     const value: ethers.BigNumber = await grimweedQuestContractRO.timeHome(hex);
-    const number = value.toNumber();
     const date = new Date(value.toNumber() * 1000);
     return date;
 }
 
-async function checkTimeHomes() {
+async function getNewtTimeHome(raiderId: number) {
+    const hex = ethers.utils.hexlify(raiderId);
+    const value: ethers.BigNumber = await newtQuestContract.timeHome(hex);
+    const date = new Date(value.toNumber() * 1000);
+    return date;
+}
+
+async function checkGrimweedTimeHomes() {
     for (let i = 0; i < raiderGrimweedList.length; i++) {
         const raiderId = raiderGrimweedList[i];
 
-        const timeHome = await getTimeHome(raiderId);
+        const timeHome = await getGrimweedTimeHome(raiderId);
+        if (timeHome.getTime() < new Date().getTime()) {
+            console.log(`Raider ${raiderId} is home`);
+        } else {
+            console.log(`Raider ${raiderId} will return at `, timeHome);
+        }
+    }
+}
+
+async function checkNewtTimeHomes() {
+    for (let i = 0; i < raiderNewtList.length; i++) {
+        const raiderId = raiderNewtList[i];
+
+        const timeHome = await getNewtTimeHome(raiderId);
         if (timeHome.getTime() < new Date().getTime()) {
             console.log(`Raider ${raiderId} is home`);
         } else {
@@ -82,9 +104,9 @@ async function getRewardsGrimweedQuest() {
         const raiderId = raiderGrimweedList[i];
 
         const hex = ethers.utils.hexlify(raiderId);
-        console.log('Will send raider id: ' + raiderId);
+        console.log('Collect GRIM rewards raider id: ' + raiderId);
 
-        const tx = await newtQuestContract.getRewards(hex, getGasValues());
+        const tx = await grimweedQuestContract.getRewards(hex, getGasValues());
         console.log(`Tx sent: ${tx.hash}`);
 
         const receipt = await tx.wait();
@@ -97,7 +119,7 @@ async function getRewardsNewtQuest() {
         const raiderId = raiderNewtList[i];
 
         const hex = ethers.utils.hexlify(raiderId);
-        console.log('Will send raider id: ' + raiderId);
+        console.log('Collect NEWT rewards raider id: ' + raiderId);
 
         const tx = await newtQuestContract.getRewards(hex, getGasValues());
         console.log(`Tx sent: ${tx.hash}`);
@@ -112,7 +134,7 @@ async function startNewtQuest() {
         const raiderId = raiderNewtList[i];
 
         const hex = ethers.utils.hexlify(raiderId);
-        console.log('Will send raider id: ' + raiderId);
+        console.log('Start NEWT raider id: ' + raiderId);
 
         const tx = await newtQuestContract.startQuest(hex, getGasValues());
         console.log(`Tx sent: ${tx.hash}`);
@@ -127,7 +149,7 @@ async function endNewtQuest() {
         const raiderId = raiderNewtList[i];
 
         const hex = ethers.utils.hexlify(raiderId);
-        console.log('End newt quest raider ID: ' + raiderId);
+        console.log('End NEWT raider ID: ' + raiderId);
 
         const tx = await newtQuestContract.endQuest(hex, getGasValues());
         console.log(`Tx sent: ${tx.hash}`);
@@ -142,7 +164,7 @@ async function startGrimweedQuest() {
         const raiderId = raiderGrimweedList[i];
 
         const hex = ethers.utils.hexlify(raiderId);
-        console.log('Will send raider id: ' + raiderId);
+        console.log('Start GRIM raider id: ' + raiderId);
 
         const tx = await grimweedQuestContract.startQuest(hex, getGasValues());
         console.log(`Tx sent: ${tx.hash}`);
@@ -157,7 +179,7 @@ async function endGrimweedQuest() {
         const raiderId = raiderGrimweedList[i];
 
         const hex = ethers.utils.hexlify(raiderId);
-        console.log('End grimweed quest raider ID: ' + raiderId);
+        console.log('End GRIM raider ID: ' + raiderId);
 
         const tx = await grimweedQuestContract.endQuest(hex, getGasValues());
         console.log(`Tx sent: ${tx.hash}`);
