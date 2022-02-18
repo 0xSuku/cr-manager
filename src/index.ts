@@ -36,35 +36,11 @@ const newtQuestContract = new ethers.Contract(newtQuestContractAddress, newtQues
 
 // CONFIG: Poner id de los raiders acá
 const raiderGrimweedList = [
-    13877,
-    16939,
-    16942,
-    16947,
-    16950,
-    30719,
-    30723,
-    30772,
-    30774,
-    44610,
-    44590,
-    44623,
-    44663,
-    44580,
-    44579,
-    44549,
-    44506,
-    44502,
-    44497,
-    44492
+    1
 ]
 
 const raiderNewtList = [
-    // 1487,
-    // 1488,
-    // 1489,
-    7764,
-    // 15062,
-    30727
+    2
 ]
 
 //gas = https://api.polygonscan.com/api?module=gastracker&action=gasoracle&apikey=SKCZ68JMGBCSMJ6U1R4H2C194TZV91P2FH
