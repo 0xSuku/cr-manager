@@ -1,6 +1,9 @@
 # cr-manager
 
+# Cambiar la lista de ID's en index.ts
+# Crear un archivo .env 2 valores:
+# MNEMONIC = "Tu clave"
+# PROVIDER_POLYGON_WSS = "Un websocket"
 
-Cambiar la lista de ID's y guardar en el archivo .env 2 valores:
-MNEMONIC = ""
-PROVIDER_POLYGON_WSS = ""
+# npm install
+# npm run start
